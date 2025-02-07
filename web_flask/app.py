@@ -188,6 +188,13 @@ def game_reviews(game_id):
     db.close()
     return render_template('reviews.html', game=game, reviews=reviews)
 
+def username_from_review(review):
+    db = get_db_connection()
+    cursor = db.cursor()
+    cursor.execute("SELECT username FROM users WHERE id = %s", (review[1],))
+    username = cursor.fetchone()
+    db.close()
+    return username[0]
 
 if __name__ == '__main__':
     app.run(debug=True)
