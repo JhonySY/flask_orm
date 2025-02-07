@@ -32,3 +32,12 @@ nav{
     background-color: #333;
     color: aliceblue;
 }
+
+#register{
+    color: rgb(19, 20, 21);
+    font-size: 90%;
+}
+#game{
+    color: rgb(19, 20, 21);
+    font-size: 90%;
+}

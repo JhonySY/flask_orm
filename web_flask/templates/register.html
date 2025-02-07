@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" contentwidth=device-width, initial-scale=1.0">
     <title>EnfocatGR</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos.css') }}">
     <link rel="shortcut icon" type="image/png" href="https://png.pngtree.com/png-vector/20191028/ourlarge/pngtree-game-control-line-icon-vector-png-image_1904129.jpg">
@@ -14,24 +14,29 @@
         <div><img src="https://png.pngtree.com/png-vector/20191028/ourlarge/pngtree-game-control-line-icon-vector-png-image_1904129.jpg" alt="logo" height="100" width="100"></div>
         <div class="header">Enfocat Games Reviews</div>
     </header>
-
     <nav>
         <ul>
-            <li><a href="/">Home</a></li>
-            {% if 'user_id' in session %}
-                <!-- Si el usuario está logueado, mostrar Logout y el nombre del usuario -->
-                <li><a href="/profile">Profile ({{ session['username'] }})</a></li>
-                <li><a href="/logout">Logout</a></li>
-            {% else %}
-                <!-- Si el usuario NO ha iniciado sesión, mostrar Register/Login -->
-                <li><a href="/login">Register/Login</a></li>
-            {% endif %}
-
+            <li><a href="/">Inicio</a></li>
+            <li><a href="/login">Register/Login</a></li>
             <li><a href="/games">Games</a></li>
         </ul>
     </nav>
-    Welcome to Enfocat Games Reviews
+    <main>
+        <h1>Register/Login</h1>
+        <h2>Register</h2>
+      <form action="/register" method="POST">
+        <label for="username">Name:</label>
+        <input type="text" id="username" name="username" required><br><br>       
+
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required><br><br>
+        
+        <button type="submit">Register</button>
+      </form>
+    </main>
     <footer></footer>
+    
+    
 </body>
 
 </html>

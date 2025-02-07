@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EnfocatGR</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos.css') }}">
+    <link rel="shortcut icon" type="image/png" href="https://png.pngtree.com/png-vector/20191028/ourlarge/pngtree-game-control-line-icon-vector-png-image_1904129.jpg">
+</head>
+
+<body>
+    <header>
+        <div><img src="https://png.pngtree.com/png-vector/20191028/ourlarge/pngtree-game-control-line-icon-vector-png-image_1904129.jpg" alt="logo" height="100" width="100"></div>
+        <div class="header">Enfocat Games Reviews</div>
+    </header>
+    
+    <nav>
+        <ul>
+            <li><a href="/">Inicio</a></li>
+            <li><a href="/login">Register/Login</a></li>
+            <li><a href="/games">Games</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <h1>Games</h1>
+
+        <!-- Opciones de vista -->
+        <div class="view-options">
+            <button id="grid-view" onclick="changeView('grid')">Vista Cuadrícula</button>
+            <button id="list-view" onclick="changeView('list')">Vista Lista</button>
+        </div>
+
+        <div id="games-container" class="games-list">
+            {% if games %}
+                <ul>
+                    {% for game in games %}
+                        <li class="game-item" id="game">
+                            <h3>{{ game[1] }}</h3>  <!-- Nombre del juego (columna 'name') -->
+                            <p><strong>Category:</strong> {{ game[3] }}</p>  <!-- Categoría del juego (columna 'category') -->
+                            <p><strong>Likes:</strong> {{ game[4] }}</p>   <!-- Contador de likes (columna 'like_count') -->
+                            <img src="{{ game[2] }}" alt="Game Image" width="200">  <!-- Imagen del juego (columna 'image') -->
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No games available.</p>
+            {% endif %}
+        </div>
+    </main>
+
+    <footer></footer>
+
+    <script>
+        function changeView(viewType) {
+            const gamesContainer = document.getElementById('games-container');
+            if (viewType === 'grid') {
+                gamesContainer.classList.add('grid-view');
+                gamesContainer.classList.remove('list-view');
+            } else {
+                gamesContainer.classList.add('list-view');
+                gamesContainer.classList.remove('grid-view');
+            }
+        }
+    </script>
+    
+</body>
+
+</html>

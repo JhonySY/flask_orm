@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" contentwidth=device-width, initial-scale=1.0">
+    <title>EnfocatGR</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos.css') }}">
+    <link rel="shortcut icon" type="image/png" href="https://png.pngtree.com/png-vector/20191028/ourlarge/pngtree-game-control-line-icon-vector-png-image_1904129.jpg">
+</head>
+
+<body>
+    <header>
+        <div><img src="https://png.pngtree.com/png-vector/20191028/ourlarge/pngtree-game-control-line-icon-vector-png-image_1904129.jpg" alt="logo" height="100" width="100"></div>
+        <div class="header">Enfocat Games Reviews</div>
+    </header>
+    <nav>
+        <ul>
+            <li><a href="/">Inicio</a></li>
+            <li><a href="/login">Register/Login</a></li>
+            <li><a href="/games">Games</a></li>
+        </ul>
+    </nav>
+    <main>
+        <h1>Register/Login</h1>
+      <!-- Formulario de inicio de sesión -->
+      <h2>Login</h2>
+         <!-- Mostrar mensajes flash -->
+         {% with messages = get_flashed_messages(with_categories=true) %}
+         {% if messages %}
+             {% for category, message in messages %}
+                 <div class="{{ category }}">{{ message }}</div>
+             {% endfor %}
+         {% endif %}
+     {% endwith %}
+
+     <!-- Formulario de inicio de sesión -->
+     <form action="/login" method="POST"> 
+         <label for="username">Name:</label>
+         <input type="text" id="username" name="username" required><br><br>       
+
+         <label for="password">Password:</label>
+         <input type="password" id="password" name="password" required><br><br>
+         
+         <button type="submit">Login</button>
+         <br><br>
+         <a href="/register" id="register">Register here</a> 
+     </form>
+    </main>
+    <footer></footer>
+    
+    
+</body>
+
+</html>
