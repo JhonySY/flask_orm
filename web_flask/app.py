@@ -1,6 +1,5 @@
 from flask import Flask, request, render_template, redirect, url_for, flash, session
 import mysql.connector
-import bcrypt
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'  # Asegúrate de definir una clave secreta para las sesiones
@@ -10,7 +9,7 @@ def get_db_connection():
     return mysql.connector.connect(
         host="localhost",
         user="root",
-        password="root",
+        password="admin",
         database="grupo_bbdd"
     )
 
@@ -31,7 +30,7 @@ def index():
 def register():
     if request.method == 'POST':
         username = request.form['username']
-        password = request.form['password']  # OJO: Guardando sin cifrar 😨
+        password = request.form['password'] 
 
         db = get_db_connection()
         cursor = db.cursor()
@@ -98,7 +97,28 @@ def games():
 # Ruta para mostrar reseñas de juegos
 @app.route('/games/reviews')
 def reviews():
+    if request.method == 'POST':
+        content = request.form['content']
+
+        db = get_db_connection()
+        cursor = db.cursor()
+
+        # Insertar usuario en la base de datos (SIN cifrado)
+        cursor.execute("INSERT INTO reviews (username) VALUES (%s)", (content))
+        db.commit()
+        db.close()
+
+        flash('Review añadida correctamente', 'success')
+        ## return redirect(url_for('reviews'))
     return render_template('reviews.html')
+
+def filter_category(category):
+    db = get_db_connection()
+    cursor = db.cursor()
+    cursor.execute("SELECT * FROM games WHERE category = %s", (category,))
+    games = cursor.fetchall()  # Obtener todos los juegos de la base de datos
+    db.close()
+    return render_template('games.html', games=games)  # Pasamos la lista de juegos al template
 
 if __name__ == '__main__':
     app.run(debug=True)
