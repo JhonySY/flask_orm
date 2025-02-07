@@ -104,7 +104,7 @@ def reviews():
         cursor = db.cursor()
 
         # Insertar usuario en la base de datos (SIN cifrado)
-        cursor.execute("INSERT INTO reviews (username) VALUES (%s)", (content))
+        cursor.execute("INSERT INTO reviews (content) VALUES (%s)", (content,))
         db.commit()
         db.close()
 
@@ -112,14 +112,18 @@ def reviews():
         ## return redirect(url_for('reviews'))
     return render_template('reviews.html')
 
-def filter_category(category):
+def obtain_category():
     db = get_db_connection()
     cursor = db.cursor()
-    cursor.execute("SELECT * FROM games WHERE category = %s", (category,))
-    games = cursor.fetchall()  # Obtener todos los juegos de la base de datos
+    cursor.execute("SELECT * FROM categories")
+    categories = cursor.fetchall()
     db.close()
-    return render_template('games.html', games=games)  # Pasamos la lista de juegos al template
+    set_categories = set()
+    for category in categories:
+        set_categories.add(category[1])
+    return set_categories
 
 if __name__ == '__main__':
     app.run(debug=True)
-    
+
+obtain_category()
