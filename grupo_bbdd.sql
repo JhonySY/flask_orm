@@ -22,8 +22,8 @@ CREATE TABLE games (
 CREATE TABLE reviews (
     id INT AUTO_INCREMENT PRIMARY KEY,
     content TEXT NOT NULL,
-    user_id INT NOT NULL,
-    game_id INT NOT NULL,
+    user_id INT,
+    game_id INT,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (game_id) REFERENCES games(id) ON DELETE CASCADE
 );
@@ -39,7 +39,7 @@ INSERT INTO games (name, image, category, like_count)
 VALUES
     ('The Witcher 3: Wild Hunt', 'https://upload.wikimedia.org/wikipedia/en/0/0c/Witcher_3_cover_art.jpg', 'RPG', 10),
     ('Minecraft', 'https://img.itch.zone/aW1hZ2UyL2phbS8zMjE3MzQvODg0Mzg1MS5wbmc=/original/m0k8TF.png', 'Sandbox', 5),
-    ('Elden Ring', 'https://storage.googleapis.com/pod_public/750/216712.jpg' ,'RPG', 50),
+    ('Elden Ring', 'RPG', 'https://storage.googleapis.com/pod_public/750/216712.jpg', 50),
     ('The Legend of Zelda: Breath of the Wild', 'https://th.bing.com/th/id/R.0bfe1eb6d429147ba27211e31c327cc2?rik=guayMb5sTSfc%2fw&pid=ImgRaw&r=0', 'Adventure', 15);
 
 INSERT INTO users (username, password)
