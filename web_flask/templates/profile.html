@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil - {{ user['username'] }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos.css') }}">
+</head>
+<body>
+
+    <header>
+        <div><img src="https://png.pngtree.com/png-vector/20191028/ourlarge/pngtree-game-control-line-icon-vector-png-image_1904129.jpg" alt="logo" height="100" width="100"></div>
+        <div class="header">My Profile</div>
+    </header>
+    
+    <nav>
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/profile">My Profile</a></li>
+            <li><a href="/games">Games</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <h1>Welcome, {{ user['username'] }}!</h1>
+        <p><strong>Username:</strong> {{ user['username'] }}</p>
+        <form action="/logout" method="POST">
+            <button type="submit" id="logout">Logout</button>
+        </form>
+        
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Enfocat Games</p>
+    </footer>
+
+</body>
+</html>

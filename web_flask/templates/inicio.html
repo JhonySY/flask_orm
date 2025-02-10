@@ -19,18 +19,24 @@
         <ul>
             <li><a href="/">Home</a></li>
             {% if 'user_id' in session %}
-                <!-- Si el usuario está logueado, mostrar Logout y el nombre del usuario -->
                 <li><a href="/profile">Profile ({{ session['username'] }})</a></li>
-                <li><a href="/logout">Logout</a></li>
             {% else %}
-                <!-- Si el usuario NO ha iniciado sesión, mostrar Register/Login -->
                 <li><a href="/login">Register/Login</a></li>
             {% endif %}
-
             <li><a href="/games">Games</a></li>
         </ul>
     </nav>
-    Welcome to Enfocat Games Reviews
+
+    <h1>Home Page</h1>
+    <h2>Game Categories</h2>
+    <ul >
+        {% for category in categories %}
+            <li><a id="categories" href="{{ url_for('games', category=category[0]) }}">{{ category[0] }}</a></li>  <!-- Enlace a los juegos de esta categoría -->
+        {% else %}
+            <li>No categories found.</li>
+        {% endfor %}
+    </ul>
+
     <footer></footer>
 </body>
 

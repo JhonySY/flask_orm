@@ -41,3 +41,69 @@ nav{
     color: rgb(19, 20, 21);
     font-size: 90%;
 }
+#categories{
+    color: rgb(19, 20, 21);
+    font-size: 90%;
+}
+#review{
+    color: rgb(19, 20, 21);
+    font-size: 90%;
+}
+#test{
+    color: rgb(19, 20, 21);
+    font-size: 90%;
+}
+
+/* Vista Cuadrícula */
+.grid-view {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); /* Ajusta las columnas */
+    gap: 20px; /* Espacio entre los elementos */
+    padding: 20px;
+    box-sizing: border-box; /* Asegúrate de que el padding no afecte el tamaño total */
+}
+
+.game-item {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    padding: 10px;
+    text-align: center;
+}
+
+.game-item img {
+    width: 100%; /* Ajustar al tamaño del contenedor */
+    height: auto;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+/* Vista Lista */
+.list-view {
+    display: block;
+}
+
+.game-item {
+    margin-bottom: 20px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+.game-item img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Estilo adicional para los elementos en lista */
+.list-view .game-item {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.list-view .game-item img {
+    width: 100px;
+    height: 100px;
+}

@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, redirect, url_for, flash, session
+from flask import Flask, request, render_template, redirect, url_for, flash, session, jsonify
 import mysql.connector
 import bcrypt
 
@@ -164,29 +164,41 @@ def game_reviews(game_id):
     cursor.execute("SELECT * FROM games WHERE id = %s", (game_id,))
     game = cursor.fetchone()
     
-    # Obtener todas las reseñas de este juego
-    cursor.execute("SELECT * FROM reviews WHERE game_id = %s", (game_id,))
-    reviews = cursor.fetchall()
-    
     # Verificar si el juego existe
     if not game:
         flash('Juego no encontrado', 'danger')
         return redirect(url_for('index'))
 
+    # Obtener todas las reseñas junto con el nombre de usuario
+    cursor.execute("""
+        SELECT reviews.content, users.username 
+        FROM reviews 
+        JOIN users ON reviews.user_id = users.id
+        WHERE reviews.game_id = %s
+    """, (game_id,))
+    reviews = cursor.fetchall()
+
     if request.method == 'POST':
-        # Agregar nueva reseña para el juego
+        # Verificar si el usuario ha iniciado sesión antes de publicar una reseña
+        if 'user_id' not in session:
+            flash('Debes iniciar sesión para publicar una reseña.', 'danger')
+            return redirect(url_for('login'))  # Redirigir a la página de login
+        
         content = request.form['content']
         user_id = session['user_id']  # Obtener el ID del usuario desde la sesión
 
-        # Ahora incluye 'user_id' en el INSERT
-        cursor.execute("INSERT INTO reviews (game_id, content, user_id) VALUES (%s, %s, %s)", (game_id, content, user_id))
-
+        # Insertar la nueva reseña
+        cursor.execute(
+            "INSERT INTO reviews (game_id, content, user_id) VALUES (%s, %s, %s)",
+            (game_id, content, user_id)
+        )
         db.commit()
         flash('Reseña añadida correctamente', 'success')
         return redirect(url_for('game_reviews', game_id=game_id))  # Redirigir a la misma página
 
     db.close()
     return render_template('reviews.html', game=game, reviews=reviews)
+
 
 def username_from_review(review):
     db = get_db_connection()
@@ -195,6 +207,39 @@ def username_from_review(review):
     username = cursor.fetchone()
     db.close()
     return username[0]
+
+@app.route('/toggle_like/<int:game_id>', methods=['POST'])
+def toggle_like(game_id):
+    if 'user_id' not in session:
+        return jsonify({"error": "Debes iniciar sesión"}), 401
+
+    user_id = session['user_id']
+    db = get_db_connection()
+    cursor = db.cursor()
+
+    # Verificar si el usuario ya dio like
+    cursor.execute("SELECT * FROM game_likes WHERE user_id = %s AND game_id = %s", (user_id, game_id))
+    like = cursor.fetchone()
+
+    if like:
+        # Si ya tiene like, lo quitamos
+        cursor.execute("DELETE FROM game_likes WHERE user_id = %s AND game_id = %s", (user_id, game_id))
+        cursor.execute("UPDATE games SET like_count = like_count - 1 WHERE id = %s", (game_id,))
+        db.commit()
+        liked = False
+    else:
+        # Si no tiene like, lo añadimos
+        cursor.execute("INSERT INTO game_likes (user_id, game_id) VALUES (%s, %s)", (user_id, game_id))
+        cursor.execute("UPDATE games SET like_count = like_count + 1 WHERE id = %s", (game_id,))
+        db.commit()
+        liked = True
+
+    # Obtener el nuevo número de likes
+    cursor.execute("SELECT like_count FROM games WHERE id = %s", (game_id,))
+    like_count = cursor.fetchone()[0]
+
+    db.close()
+    return jsonify({"liked": liked, "like_count": like_count})
 
 if __name__ == '__main__':
     app.run(debug=True)

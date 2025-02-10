@@ -17,8 +17,14 @@
     
     <nav>
         <ul>
-            <li><a href="/">Inicio</a></li>
-            <li><a href="/login">Register/Login</a></li>
+            <li><a href="/">Home</a></li>
+            {% if 'user_id' in session %}
+                <!-- Si el usuario está logueado, mostrar Logout y el nombre del usuario -->
+                <li><a href="/profile">Profile ({{ session['username'] }})</a></li>
+            {% else %}
+                <!-- Si el usuario NO ha iniciado sesión, mostrar Register/Login -->
+                <li><a href="/login">Register/Login</a></li>
+            {% endif %}
             <li><a href="/games">Games</a></li>
         </ul>
     </nav>
@@ -26,28 +32,29 @@
     <main>
         <h1>Games</h1>
 
-        <!-- Opciones de vista -->
-        <div class="view-options">
-            <button id="grid-view" onclick="changeView('grid')">Vista Cuadrícula</button>
-            <button id="list-view" onclick="changeView('list')">Vista Lista</button>
-        </div>
+        {% if category %}
+            <h2>Category: {{ category }}</h2>  <!-- Mostrar la categoría seleccionada -->
+        {% endif %}
 
         <div id="games-container" class="games-list">
             {% if games %}
-                <ul>
+                <div class="grid-view">  <!-- Cambio: usa un div aquí -->
                     {% for game in games %}
-                        <li class="game-item" id="game">
-                            <h3>{{ game[1] }}</h3>  <!-- Nombre del juego (columna 'name') -->
-                            <p><strong>Category:</strong> {{ game[3] }}</p>  <!-- Categoría del juego (columna 'category') -->
-                            <p><strong>Likes:</strong> {{ game[4] }}</p>   <!-- Contador de likes (columna 'like_count') -->
-                            <img src="{{ game[2] }}" alt="Game Image" width="200">  <!-- Imagen del juego (columna 'image') -->
-                        </li>
+                        <div class="game-item" id="game">
+                            <h3>{{ game[1] }}</h3>  <!-- Nombre del juego -->
+                            <p><strong>Category:</strong> {{ game[3] }}</p>  <!-- Categoría del juego -->
+                            <p><strong>Likes:</strong> {{ game[4] }}</p>   <!-- Likes -->
+                            <img src="{{ game[2] }}" alt="Game Image" width="200">  <!-- Imagen -->
+                            <!-- Enlace a la página de reseñas del juego -->
+                            <a id='review' href="{{ url_for('game_reviews', game_id=game[0]) }}">Ver reseñas</a>
+                        </div>
                     {% endfor %}
-                </ul>
+                </div>
             {% else %}
-                <p>No games available.</p>
+                <p>No games available in this category.</p>
             {% endif %}
         </div>
+
     </main>
 
     <footer></footer>
@@ -64,7 +71,7 @@
             }
         }
     </script>
-    
+
 </body>
 
 </html>
