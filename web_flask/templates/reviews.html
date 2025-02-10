@@ -28,12 +28,19 @@
         <h1>Reseñas de {{ game['name'] }}</h1>  <!-- Nombre del juego -->
         <img src="{{ game['image'] }}" alt="Game Image" width="200">  <!-- Imagen -->
         <p><strong>Category:</strong> {{ game['category'] }}</p>  <!-- Categoría -->
-        <p><strong>Likes:</strong> <span id="like-count">{{ game['like_count'] }}</span></p>
+        <p>
+            <strong>Likes:</strong> <span id="like-count">{{ game['like_count'] }}</span>
             {% if 'user_id' in session %}
-                <button id="like-button" onclick="toggleLike({{ game['id'] }})">
-                    👍 Like
+                <button id="like-button">
+                    {% if user_liked %}
+                        ❤️ Quitar Like
+                    {% else %}
+                        🤍 Dar Like
+                    {% endif %}
                 </button>
             {% endif %}
+        </p>
+        
 
 
         <h2>Reseñas:</h2>
@@ -58,21 +65,34 @@
         {% endif %}
     </main>
     <script>
-        function toggleLike(gameId) {
-            fetch(`/toggle_like/${gameId}`, { method: 'POST' })
-            .then(response => response.json())
-            .then(data => {
-                if (data.error) {
-                    alert(data.error);
-                } else {
-                    document.getElementById('like-count').innerText = data.like_count;
-                    let btn = document.getElementById('like-button');
-                    btn.innerText = data.liked ? "❤️ Liked" : "👍 Like";
-                }
-            })
-            .catch(error => console.error('Error:', error));
-        }
+        document.addEventListener("DOMContentLoaded", function () {
+            const likeButton = document.getElementById("like-button");
+            const likeCount = document.getElementById("like-count");
+        
+            if (likeButton) {
+                likeButton.addEventListener("click", function () {
+                    fetch(`/toggle_like/{{ game['id'] }}`, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({}),
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.liked) {
+                            likeButton.textContent = "❤️ Quitar Like";
+                        } else {
+                            likeButton.textContent = "🤍 Dar Like";
+                        }
+                        likeCount.textContent = data.like_count;
+                    })
+                    .catch(error => console.error("Error:", error));
+                });
+            }
+        });
         </script>
+        
         
     <footer></footer>
 </body>

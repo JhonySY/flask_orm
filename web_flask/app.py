@@ -211,35 +211,37 @@ def username_from_review(review):
 @app.route('/toggle_like/<int:game_id>', methods=['POST'])
 def toggle_like(game_id):
     if 'user_id' not in session:
-        return jsonify({"error": "Debes iniciar sesión"}), 401
+        return jsonify({"error": "No autenticado"}), 401  # No autorizado
 
     user_id = session['user_id']
     db = get_db_connection()
     cursor = db.cursor()
 
-    # Verificar si el usuario ya dio like
+    # Verificar si el usuario ya ha dado like a este juego
     cursor.execute("SELECT * FROM game_likes WHERE user_id = %s AND game_id = %s", (user_id, game_id))
     like = cursor.fetchone()
 
     if like:
-        # Si ya tiene like, lo quitamos
+        # Si el usuario ya dio like, eliminarlo y restar 1 al contador
         cursor.execute("DELETE FROM game_likes WHERE user_id = %s AND game_id = %s", (user_id, game_id))
-        cursor.execute("UPDATE games SET like_count = like_count - 1 WHERE id = %s", (game_id,))
-        db.commit()
+        cursor.execute("UPDATE games SET like_count = like_count - 1 WHERE id = %s AND like_count > 0", (game_id,))
         liked = False
     else:
-        # Si no tiene like, lo añadimos
+        # Si no, agregar el like y sumar 1 al contador
         cursor.execute("INSERT INTO game_likes (user_id, game_id) VALUES (%s, %s)", (user_id, game_id))
         cursor.execute("UPDATE games SET like_count = like_count + 1 WHERE id = %s", (game_id,))
-        db.commit()
         liked = True
 
-    # Obtener el nuevo número de likes
+    # Obtener la nueva cantidad de likes después de la actualización
     cursor.execute("SELECT like_count FROM games WHERE id = %s", (game_id,))
     like_count = cursor.fetchone()[0]
 
+    db.commit()
     db.close()
+
     return jsonify({"liked": liked, "like_count": like_count})
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)
